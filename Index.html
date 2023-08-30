@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trigram Memory Match with Colors</title>
+    <style>
+        /* Basic styling */
+        .game-board {
+            width: 300px;
+            margin: 50px auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .card {
+            width: 70px;
+            height: 100px;
+            background: #333;  /* dark gray */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            color: white; /* default color */
+        }
+
+        .matched {
+            background: green;
+            pointer-events: none;
+        }
+
+        .flipped {
+            background: #555; /* slightly lighter gray for flipped cards */
+            pointer-events: none;
+        }
+
+        /* Colors for trigrams (adjusted for better visibility) */
+        .heaven { color: lightblue; }
+        .lake { color: lightcyan; }
+        .fire { color: orangered; }
+        .thunder { color: violet; }
+        .wind { color: lightgreen; }
+        .water { color: deepskyblue; }
+        .mountain { color: sandybrown; }
+        .earth { color: yellow; }
+    </style>
+</head>
+<body>
+
+<h1>Trigram Memory Match with Colors!</h1>
+<p>Click on two cards to find a matching pair!</p>
+
+<div class="game-board" id="gameBoard"></div>
+
+<script>
+    let cards = [
+        { symbol: '☰', color: 'heaven' },
+        { symbol: '☱', color: 'lake' },
+        { symbol: '☲', color: 'fire' },
+        { symbol: '☳', color: 'thunder' },
+        { symbol: '☴', color: 'wind' },
+        { symbol: '☵', color: 'water' },
+        { symbol: '☶', color: 'mountain' },
+        { symbol: '☷', color: 'earth' },
+        { symbol: '☰', color: 'heaven' },
+        { symbol: '☱', color: 'lake' },
+        { symbol: '☲', color: 'fire' },
+        { symbol: '☳', color: 'thunder' },
+        { symbol: '☴', color: 'wind' },
+        { symbol: '☵', color: 'water' },
+        { symbol: '☶', color: 'mountain' },
+        { symbol: '☷', color: 'earth' }
+    ];
+
+    // Shuffle the cards
+    cards.sort(() => Math.random() - 0.5);
+
+    let flippedCards = [];
+    let matchedPairs = 0;
+
+    const gameBoard = document.getElementById('gameBoard');
+    cards.forEach(card => {
+        const cardElement = document.createElement('div');
+        cardElement.classList.add('card');
+        cardElement.dataset.cardValue = card.symbol;
+
+        cardElement.addEventListener('click', function() {
+            if (flippedCards.length < 2 && !cardElement.classList.contains('flipped')) {
+                flippedCards.push(cardElement);
+                cardElement.textContent = card.symbol;
+                cardElement.classList.add(card.color, 'flipped');
+
+                if (flippedCards.length === 2) {
+                    if (flippedCards[0].dataset.cardValue === flippedCards[1].dataset.cardValue) {
+                        flippedCards.forEach(card => card.classList.add('matched'));
+                        matchedPairs++;
+
+                        if (matchedPairs === 8) {
+                            alert('Congratulations! You matched all pairs!');
+                        }
+
+                        flippedCards = [];
+                    } else {
+                        setTimeout(() => {
+                            flippedCards.forEach(card => card.classList.remove('flipped', card.color));
+                            flippedCards.forEach(card => card.textContent = '');
+                            flippedCards = [];
+                        }, 1000);
+                    }
+                }
+            }
+        });
+
+        gameBoard.appendChild(cardElement);
+    });
+</script>
+
+</body>
+</html>
